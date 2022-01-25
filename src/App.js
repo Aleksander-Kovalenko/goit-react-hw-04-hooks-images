@@ -12,8 +12,6 @@ import api from "./components/services/images-api";
 import { Modal } from "./components/Modal";
 import { SearchBar } from "./components/Searchbar";
 
-// const notify = () => toast("Wow so easy!");
-
 export class App extends Component {
   state = {
     imagesQuery: "",
