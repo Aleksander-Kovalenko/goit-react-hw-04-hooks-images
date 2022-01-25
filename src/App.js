@@ -10,7 +10,7 @@ import { Button } from "./components/Button";
 import { ImageGallery } from "./components/ImageGallery";
 import api from "./components/services/images-api";
 import { Modal } from "./components/Modal";
-import { SearchBar } from "./components/Searchbar";
+import SearchBar from "./components/Searchbar";
 
 export class App extends Component {
   state = {

@@ -9,8 +9,7 @@ export function Modal({ onToggleModal, image, tags }) {
     window.addEventListener("keydown", handleKeydown);
 
     function handleKeydown (e) {
-      console.log(e.currentTarget);
-      if (e.code === "Escape") {
+          if (e.code === "Escape") {
        return onToggleModal();
       }
       else if(e.currentTarget === e.target){
@@ -20,10 +19,9 @@ export function Modal({ onToggleModal, image, tags }) {
     return ()=>{
     window.removeEventListener('keydown', handleKeydown)
   }
-});
-
+  });
+  
   const handleBackdropClick = (e) => {
-    console.log(e.currentTarget);
     const clickToBackdrop = e.currentTarget === e.target;
     if (clickToBackdrop) return onToggleModal();
   };
