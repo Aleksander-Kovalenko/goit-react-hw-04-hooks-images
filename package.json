@@ -1,5 +1,5 @@
 {
-  "name": "goit-react-hw-03-image-finder",
+  "name": "goit-react-hw-04-hooks-images",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://Aleksander-Kovalenko.github.io/goit-react-hw-04-hooks-images",
@@ -54,6 +54,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --cache --fix",
-    "*.{js,css,scss,md}": "prettier --write"
+    "*.{js,css,scss,md}": "prettier --write",
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }
