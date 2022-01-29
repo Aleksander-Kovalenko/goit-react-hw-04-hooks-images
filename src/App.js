@@ -1,4 +1,4 @@
-import { Component, useReducer, useState } from 'react';
+import { Component, useCallback, useEffect, useReducer, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -12,61 +12,91 @@ import api from './components/services/images-api';
 import { Modal } from './components/Modal';
 import SearchBar from './components/Searchbar';
 
-function setImagesQueryInfo(state, action) {
-  switch (action) {
-    case action.imagesQuery:
-      return { ...state, imagesQuery: action.imagesQuery };
-    default:
-      throw new Error();
-  }
-}
+// function setImagesQueryInfo(state, action) {
+// switch (action) {
+// case action.imagesQuery:
+// return console.log(action);
+// return { ...state, imagesQuery: action.imagesQuery };
+//     default:
+//       throw new Error();
+//   }
+// }
 
 export default function App() {
-  const [state, despatcher] = useReducer(setImagesQueryInfo, {
-    imagesQuery: '',
-    currentImg: '',
-    tags: '',
-    page: 1,
-    listImages: [],
-    showModal: false,
-    isLoading: false,
-    error: null,
-  });
+  // const [state, despatcher] = useReducer(setImagesQueryInfo, {
+  //   imagesQuery: '',
+  //   currentImg: '',
+  //   tags: '',
+  //   page: 1,
+  //   listImages: [],
+  //   showModal: false,
+  //   isLoading: false,
+  //   error: null,
+  // });
+
+  const [imagesQuery, setImagesQuery] = useState('');
+  const [currentImg, setCurrentImg] = useState('');
+  const [tags, setTags] = useState('');
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [listImages, setListImages] = useState([]);
+  const [error, setError] = useState(null);
+
+  const getImages = useCallback(() => {
+    if (imagesQuery === '') return;
+
+    setIsLoading(prevState => !prevState);
+    api
+      .fetchImages(page, imagesQuery)
+      .then(response => {
+        if (response.length === 0) return toast.info('Oops');
+        setListImages(prevState => [...prevState, ...response]);
+      })
+      .catch(error => setError(error))
+      .finally(() => setIsLoading(prevState => !prevState));
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, [imagesQuery, page]);
+
+  useEffect(() => {
+    getImages();
+  }, [getImages]);
 
   const handleForm = query => {
+    setListImages([]);
+    setPage(1);
     if (query.trim().length === 0) return toast.info('Уточните запрос');
-
-    despatcher({
-      imagesQuery: query,
-    });
+    setImagesQuery(query);
   };
 
-  // const [imagesQuery, setImagesQuery] = useState('');
-  // const [currentImg, setCurrentImg] = useState('');
-  // const [tags, setTags] = useState('')
-  // const [page, setPage] = useState(1)
-  // const [showModal, setShowModal] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [listImages, setListImages] = useState([]);
-  // const [, setError] = useState(null);
+  const getLargeImages = (selectedImages, descImages) => {
+    setCurrentImg(selectedImages);
+    setTags(descImages);
+    onToggleModal();
+  };
+
+  const onToggleModal = () => {
+    setShowModal(!showModal);
+  };
+
+  const galleryImages = listImages.length > 0;
 
   return (
     <div className="App">
       <SearchBar submitForm={handleForm} />
       <ToastContainer autoClose={3000} />
-      {/* {galleryImages && ( */}
-      <>
-        {/* <ImageGallery items={state.listImages} currentImg={this.getLargeImages} /> */}
-        {/* <Button handleClick={this.getImages} /> */}
-      </>
-      {/* )} */}
-      {/* {state.isLoading && (
-        <TailSpin className="loader" wrapperStyle={{ justifyContent: 'center' }} />
-      )} */}
+      {galleryImages && (
+        <>
+          <ImageGallery items={listImages} currentImg={getLargeImages} />
+          <Button handleClick={() => setPage(page => page + 1)} />
+        </>
+      )}
+      {isLoading && <TailSpin className="loader" wrapperStyle={{ justifyContent: 'center' }} />}
 
-      {/* {state.showModal && (
-        <Modal image={state.currentImg} tags={state.tags} onToggleModal={this.onToggleModal} />
-      )} */}
+      {showModal && <Modal image={currentImg} tags={tags} onToggleModal={onToggleModal} />}
     </div>
   );
 }

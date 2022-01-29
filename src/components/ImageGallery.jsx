@@ -1,11 +1,11 @@
-import propTypes from "prop-types";
-import { ImageGalleryItem } from "./ImageGalleryItem";
-import { ImageGalleryList } from "./Gallery.styled";
+import propTypes from 'prop-types';
+import { ImageGalleryItem } from './ImageGalleryItem';
+import { ImageGalleryList } from './Gallery.styled';
 
 export const ImageGallery = ({ items, currentImg }) => {
   return (
     <ImageGalleryList>
-      {items.map((item) => (
+      {items.map(item => (
         <ImageGalleryItem
           key={item.id}
           largeImg={item.largeImageURL}
